@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "com.testclone.app"
-    compileSdk = 31
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "com.testclone.app"
         minSdk = 24
-        targetSdk = 31
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
