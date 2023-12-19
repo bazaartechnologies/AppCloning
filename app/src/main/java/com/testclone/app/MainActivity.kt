@@ -2,27 +2,40 @@ package com.testclone.app
 
 import android.app.ActivityManager
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         val notepad = findViewById<TextView>(R.id.notepad)
-        val version = 3
+        val version = 6
 
         val context = this.baseContext
+        val context2 = this.createPackageContext("com.testclone.app", CONTEXT_IGNORE_SECURITY)
 
-        val path = context.filesDir.path
+        val filePath = context.filesDir.path
+        val dataPath = context.dataDir.path
+        val cachePath = context.cacheDir.path
+        val file2 = context2.externalCacheDir
+
+//        val pkgM2 = packageManager.getApplicationInfo(packageName, PackageManager.ApplicationInfoFlags.of(PackageManager.GET_META_DATA))
+
 
 //          context.checkse
         notepad.append("\nversion: $version")
 
-        notepad.append("\npath: $path")
+        notepad.append("\nfile path: $filePath")
+        notepad.append("\ndataPath: $dataPath")
+        notepad.append("\ncachePath: $cachePath")
+        notepad.append("\nfile 2: $file2")
 
         notepad.append("\n abc : ${Build.VERSION.SDK_INT}")
 
@@ -39,7 +52,7 @@ class MainActivity : AppCompatActivity() {
             val processes = activityManager.runningAppProcesses
 
 
-            notepad.append("\n 1 Sservices ${services}")
+            notepad.append("\n 1 Services ${services}")
             notepad.append("\n Process list ${processes.size}\n ")
 
             for(process in processes){
@@ -57,8 +70,20 @@ class MainActivity : AppCompatActivity() {
             val apptasks = activityManager.appTasks
 
 
-//            notepad.append("\n services ${apptasks}")
+            notepad.append("\n services App tasks ${apptasks}")
+            val remoteConfig = CloneAppABConfig()
+            val environmentChecker = EnvironmentCheckerImpl(context,remoteConfig)
+            notepad.append("\n ${environmentChecker.getCloningStatus()}\n")
 
+            val appInfo = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
+
+            notepad.append("\nApp data directory ${appInfo.dataDir}")
+            notepad.append("\nPackage Name ${appInfo.packageName}")
+            notepad.append("\nProcess name ${appInfo.processName}")
+            notepad.append("\nStorage UUID ${appInfo.storageUuid.toString()}")
+            notepad.append("\nAPP UUID ${appInfo.uid}")
+            notepad.append("\nAPP Metadata ${appInfo.metaData}")
+            notepad.append("\nAPP Name ${appInfo.name}")
             apptasks.forEach {
 //                notepad.append("\n taskInfo ${it.taskInfo}")
 //                notepad.append("\n serviceClassName ${it.service.className}")
@@ -67,7 +92,3 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
-
-//
-//adb shell pm clear com.waxmoon.ma.gp
-//adb uninstall com.testclone.app
