@@ -5,9 +5,12 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -84,11 +87,50 @@ class MainActivity : AppCompatActivity() {
             notepad.append("\nAPP UUID ${appInfo.uid}")
             notepad.append("\nAPP Metadata ${appInfo.metaData}")
             notepad.append("\nAPP Name ${appInfo.name}")
+
+
+
+
+
+            notepad.append("\nAndroid count ${countAndroidDirectories()}")
+
+
+
+
             apptasks.forEach {
 //                notepad.append("\n taskInfo ${it.taskInfo}")
 //                notepad.append("\n serviceClassName ${it.service.className}")
 //                notepad.append("\n serviceClientPackage ${it.clientPackage}")
             }
         }
+    }
+
+
+    fun countAndroidDirectories(): Int {
+        val externalStorage = Environment.getExternalStorageDirectory()
+        val androidDirectories = findAndroidDirectories(externalStorage)
+        return androidDirectories.size
+    }
+
+    fun findAndroidDirectories(directory: File): List<File> {
+        val androidDirectories = mutableListOf<File>()
+
+        // List all files and directories in the given directory
+        val files = directory.listFiles()
+
+        // Iterate through the files and directories
+        files?.forEach { file ->
+            if (file.isDirectory) {
+                // Check if the directory name is "Android"
+                if (file.name.equals("Android", ignoreCase = true)) {
+                    androidDirectories.add(file)
+                } else {
+                    // Recursively search for Android directories in subdirectories
+                    androidDirectories.addAll(findAndroidDirectories(file))
+                }
+            }
+        }
+
+        return androidDirectories
     }
 }

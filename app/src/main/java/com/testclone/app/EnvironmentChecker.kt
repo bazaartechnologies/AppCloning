@@ -5,6 +5,9 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
+import androidx.core.content.ContextCompat
+import java.io.File
 import java.net.URL
 import java.util.jar.Attributes
 import java.util.jar.Manifest
@@ -329,6 +332,8 @@ class EnvironmentCheckerImpl(
 
         return count
     }
+
+
 
     companion object {
         private const val APP_PACKAGE_DOT_COUNT = 2 // number of dots present in package name
