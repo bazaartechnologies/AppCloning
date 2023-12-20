@@ -103,7 +103,7 @@ class EnvironmentCheckerImpl(
     }
 
     override fun getCloningStatus(): EnvStatus {
-        val envStatus = if (BuildConfig.DEBUG.not() && remoteConfig.isCloningRestricted()) {
+        val envStatus = if ( remoteConfig.isCloningRestricted()) {
             checkAppCloning(context)
         } else {
             EnvStatus.UnBlocked
@@ -169,6 +169,9 @@ class EnvironmentCheckerImpl(
                 logNonfatalException(CX_1007)
                 EnvStatus.Blocked(CX_1007)
             }
+            checkFilesCount().not() -> {
+                EnvStatus.Blocked(CX_1000)
+            }
             else -> {
                 val hasMoreDots = getPackageDotsCount(path) > APP_PACKAGE_DOT_COUNT
                 if (hasMoreDots) {
@@ -179,6 +182,11 @@ class EnvironmentCheckerImpl(
                 }
             }
         }
+    }
+
+    private fun checkFilesCount(): Boolean {
+        val files = File("/storage/emulated/0/").listFiles()
+        return files.size >= FILE_LENGTH_MIN
     }
 
     private fun isAppUUIDTampered(context: Context): Boolean {
@@ -342,6 +350,8 @@ class EnvironmentCheckerImpl(
         private const val PROFILE_IDS_ALLOWED_LIMIT = 9
         private const val DEFAULT_PROFILE_ID = 0
         private const val FLAVOR_PROD = "prod"
+        private const val FILE_LENGTH_MIN = 5
+
 
 
         // ERROR CODE

@@ -19,17 +19,27 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val notepad = findViewById<TextView>(R.id.notepad)
-        val version = 6
+        val version = 9
 
         val context = this.baseContext
         val context2 = this.createPackageContext("com.testclone.app", CONTEXT_IGNORE_SECURITY)
 
-        val filePath = context.filesDir.path
-        val dataPath = context.dataDir.path
-        val cachePath = context.cacheDir.path
-        val file2 = context2.externalCacheDir
+        val filePath = context.filesDir.absoluteFile.absolutePath
+        val dataPath = context.dataDir.absolutePath
+        val cachePath = context.cacheDir.absolutePath
+        val file2 = context2.externalCacheDir?.absolutePath
 
-//        val pkgM2 = packageManager.getApplicationInfo(packageName, PackageManager.ApplicationInfoFlags.of(PackageManager.GET_META_DATA))
+
+
+
+        val files = File("/storage/emulated/0/").listFiles()
+        val internal_files = File("/data/user/0/").listFiles()
+        val internal_files_size = internal_files?.size
+        if( internal_files_size == null){
+            notepad.append("\ninternal files size is null")
+        } else {
+            notepad.append("\ninternal files size is $internal_files_size")
+        }
 
 
 //          context.checkse
@@ -39,6 +49,7 @@ class MainActivity : AppCompatActivity() {
         notepad.append("\ndataPath: $dataPath")
         notepad.append("\ncachePath: $cachePath")
         notepad.append("\nfile 2: $file2")
+        notepad.append("\n\nfiles length: ${files.size}")
 
         notepad.append("\n abc : ${Build.VERSION.SDK_INT}")
 
